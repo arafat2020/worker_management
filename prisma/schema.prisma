@@ -222,7 +222,7 @@ model ServiceRequest {
   postalCode          String
   locationDescription String         @db.Text
   problemDescription  String         @db.Text
-  reqPhoto            FileInstance?  @relation("ReqPhoto")
+  reqPhoto            FileInstance[]  @relation("ReqPhoto")
   beforePhoto         FileInstance[] @relation("BeforePhoto")
   afterPhoto          FileInstance[] @relation("AfterPhoto")
   preferredTime       DateTime
