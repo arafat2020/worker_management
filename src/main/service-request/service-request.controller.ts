@@ -7,7 +7,7 @@ import {
   Post,
   Query,
   Req,
-  UploadedFile,
+  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -20,7 +20,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { FileType, MulterService } from 'src/utils/lib/multer.service';
 import { CreateServiceRequestDTO } from './dto/serviceRequest.sto';
 import { AuthenticatedRequest } from 'src/common/types/AuthenticatedRequest';
@@ -43,36 +43,47 @@ export class ServiceRequestController {
     private readonly assignTaskService: AssignTaskService,
   ) {}
 
-  @ApiTags('Client', 'Admin', 'Worker')
   @Post('create')
   @Roles('CLIENT','ADMIN', 'WORKER')
+  @ApiTags('Client', 'Admin', 'Worker')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
-    FileInterceptor(
+    FilesInterceptor(
       'reqPhoto',
+      20, // max number of files
       new MulterService().createMulterOptions('./temp', 'temp', FileType.IMAGE),
     ),
   )
   create(
-    @UploadedFile() reqPhoto: Express.Multer.File,
-    @Body() body: CreateServiceRequestDTO,
-    @Req() req: AuthenticatedRequest,
-  ) {
-    if (!req.user.profileId) {
-      throw new BadRequestException('Profile not Created');
-    }
-
-    // Validate file upload
-    if (!reqPhoto) {
-      throw new BadRequestException('reqPhoto is required');
-    }
-
-    body.reqPhoto = reqPhoto;
-
-    return this.mainService.createServiceRequest(body, {
-      id: req.user.profileId,
-    });
+  @UploadedFiles() reqPhotos: Express.Multer.File[],
+  @Body() body: CreateServiceRequestDTO,
+  @Req() req: AuthenticatedRequest,
+) {
+  if (!req.user.profileId) {
+    throw new BadRequestException('Profile not Created');
   }
+
+  if (!reqPhotos || reqPhotos.length === 0) {
+    throw new BadRequestException('At least one reqPhoto is required');
+  }
+
+  // Handle captions
+  // const captions = Array.isArray(body.reqPhotoCaptions)
+  //   ? body.reqPhotoCaptions
+  //   : typeof body.reqPhotoCaptions === 'string'
+  //     ? JSON.parse(body.reqPhotoCaptions)
+  //     : [];
+
+  // if (captions.length !== reqPhotos.length) {
+  //   throw new BadRequestException('Number of captions must match number of photos');
+  // }
+
+  body.reqPhoto = reqPhotos;
+
+  return this.mainService.createServiceRequest(body, {
+    id: req.user.profileId,
+  });
+}
 
   @ApiTags('Admin')
   @Get('list')

@@ -13,15 +13,22 @@ export class MainService {
   ) {}
 
   async createServiceRequest(rawData: CreateServiceRequestDTO, { id }: IdDto): Promise<ApiResponse<any>> {
-  const { reqPhoto, name, taskTypeId, ...rest } = rawData;
+  const { reqPhoto, name, taskTypeId, reqPhotoCaptions = [], ...rest } = rawData;
 
-  if (!reqPhoto) {
-    throw new BadRequestException('reqPhoto is required');
+  if (!reqPhoto || !Array.isArray(reqPhoto) || reqPhoto.length === 0) {
+    throw new BadRequestException('At least one reqPhoto is required');
   }
 
-  const file = await this.file.processUploadedFile(reqPhoto);
+  if (reqPhotoCaptions && reqPhotoCaptions.length < 0) {
+    throw new BadRequestException("Request Captions Error")
+  }
 
-  // Check which profile this ID belongs to
+  const files = await Promise.all(
+  reqPhoto.map((file, index) =>
+    this.file.processUploadedFile(file, reqPhotoCaptions[index]),
+  ),
+);
+
   const [client, admin, worker] = await Promise.all([
     this.db.clientProfile.findUnique({ where: { id } }),
     this.db.adminProfile.findUnique({ where: { id } }),
@@ -29,18 +36,19 @@ export class MainService {
   ]);
 
   if (!client && !admin && !worker) {
-    this.file.remove(file.id);
+    // Cleanup
+    await Promise.all(files.map(f => this.file.remove(f.id)));
     throw new BadRequestException('Invalid profile ID — not a client, admin, or worker');
   }
 
   const data: any = {
-    reqPhoto: {
-      connect: { id: file.id },
-    },
     name,
     ...rest,
     TaskType: {
       connect: { id: taskTypeId },
+    },
+    reqPhoto: {
+      connect: files.map(f => ({ id: f.id })), // connect multiple files
     },
   };
 
@@ -64,7 +72,6 @@ export class MainService {
       },
     });
 
-    // Return extra info based on who created it
     const creator = client
       ? { role: 'CLIENT', profile: serviceRequest.ClientProfile }
       : admin
@@ -80,7 +87,7 @@ export class MainService {
       success: true,
     };
   } catch (error) {
-    this.file.remove(file.id);
+    await Promise.all(files.map(f => this.file.remove(f.id)));
     throw new BadRequestException(`Failed to create service request\n ${error}`);
   }
 }

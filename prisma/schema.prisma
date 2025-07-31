@@ -179,12 +179,13 @@ model FileInstance {
   filename           String
   originalFilename   String
   path               String
+  caption            String?
   url                String
   fileType           String
   mimeType           String
   size               Int
   ServiceRequest     ServiceRequest? @relation("ReqPhoto", fields: [serviceRequestId], references: [id])
-  serviceRequestId   String?         @unique
+  serviceRequestId   String?         
   ServiceAfter       ServiceRequest? @relation("AfterPhoto", fields: [serviceAfterId], references: [id])
   serviceAfterId     String?
   ClientProfile      ClientProfile?  @relation(fields: [clientProfileId], references: [id])

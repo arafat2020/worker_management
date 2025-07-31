@@ -9,6 +9,7 @@ import {
   IsInt,
   Min,
   IsUUID,
+  IsOptional,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { TaskType } from 'generated/prisma';
@@ -75,12 +76,23 @@ export class CreateServiceRequestDTO {
   problemDescription: string;
 
   @ApiProperty({
-    description: 'Photo showing the problem (required)',
-    type: 'string',
-    format: 'binary',
-    required: true,
+  description: 'Photos showing the problem (multiple allowed)',
+  type: 'string',
+  format: 'binary',
+  isArray: true,
+  required: true,
   })
-  reqPhoto?: Express.Multer.File; //
+  reqPhoto: Express.Multer.File[];
+
+  @ApiProperty({
+    description: 'Captions for each reqPhoto (in order)',
+    type: [String],
+    example: ['Ceiling damage', 'Wall mold'],
+  })
+  @IsString({ each: true })
+  @IsNotEmpty({ each: true })
+  @IsOptional()
+  reqPhotoCaptions?: string[];
 
   @ApiProperty({
     description: 'Preferred time for the service',
