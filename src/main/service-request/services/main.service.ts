@@ -22,6 +22,7 @@ export class MainService {
   if (reqPhotoCaptions && reqPhotoCaptions.length < 0) {
     throw new BadRequestException("Request Captions Error")
   }
+  
 
   const files = await Promise.all(
   reqPhoto.map((file, index) =>
@@ -64,7 +65,7 @@ export class MainService {
     const serviceRequest = await this.db.serviceRequest.create({
       data,
       include: {
-        reqPhoto: { select: { url: true } },
+        reqPhoto: { select: { url: true,caption:true } },
         tasks: { select: { name: true, price: true } },
         ClientProfile: true,
         AdminProfile: true,

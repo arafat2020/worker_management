@@ -36,6 +36,7 @@ export class CommonService {
         reqPhoto:{
           select: {
             url: true,
+            caption:true
           },
         }
       }

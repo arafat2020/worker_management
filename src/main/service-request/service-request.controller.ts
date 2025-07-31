@@ -68,18 +68,16 @@ export class ServiceRequestController {
   }
 
   // Handle captions
-  // const captions = Array.isArray(body.reqPhotoCaptions)
-  //   ? body.reqPhotoCaptions
-  //   : typeof body.reqPhotoCaptions === 'string'
-  //     ? JSON.parse(body.reqPhotoCaptions)
-  //     : [];
-
-  // if (captions.length !== reqPhotos.length) {
-  //   throw new BadRequestException('Number of captions must match number of photos');
-  // }
+  const captions =
+  typeof body.reqPhotoCaptions === 'string'
+    ? (body.reqPhotoCaptions as string).split(',').map((s: string) => s.trim())
+    : Array.isArray(body.reqPhotoCaptions)
+    ? body.reqPhotoCaptions
+    : [];
 
   body.reqPhoto = reqPhotos;
-
+  body.reqPhotoCaptions = captions
+  
   return this.mainService.createServiceRequest(body, {
     id: req.user.profileId,
   });
