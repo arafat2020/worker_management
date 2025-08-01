@@ -180,7 +180,6 @@ model FileInstance {
   originalFilename   String
   caption            String?
   path               String
-  caption            String?
   url                String
   fileType           String
   mimeType           String

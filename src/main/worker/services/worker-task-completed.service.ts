@@ -14,7 +14,7 @@ export class WorkerTaskCompletedService {
                 note: note?.note || null,
             },
             where: {
-                id:id.id
+                id: id.id
             }
         })
     }

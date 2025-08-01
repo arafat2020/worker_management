@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsPhoneNumber, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsPhoneNumber, IsString, Length, Matches, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserType } from 'generated/prisma';
 
@@ -15,16 +15,23 @@ export class RegisterDto {
     description: 'Phone number of the user',
     example: '+1234567890',
   })
-  @IsPhoneNumber()
+  @Matches(/^\+\d{10,15}$/, {
+  message: 'Phone number must be in international E.164 format (e.g. +1234567890)',
+})
+@IsNotEmpty()
   @IsNotEmpty()
   phone: string;
 
   @ApiProperty({
-    description: 'Password for the user account',
-    example: 'StrongPassword123!',
+    description: 'User password',
+    example: 'Password123!',
+    required: true,
+    minLength: 8,
+    maxLength: 32,
   })
-  @IsString()
-  @MinLength(6)
+  @IsNotEmpty({ message: 'Password is required' })
+  @IsString({ message: 'Password must be a string' })
+  @Length(8, 32, { message: 'Password must be between 8 and 32 characters' })
   password: string;
 
   @ApiProperty({

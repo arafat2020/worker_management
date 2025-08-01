@@ -28,7 +28,7 @@ export class CommonService {
         Invoice:true,
         Reviews:true,
         signature:true,
-        serviceDetails:true,
+        serviceDetails: true,
         TaskType:{
           select: {
             name: true,

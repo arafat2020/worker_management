@@ -16,15 +16,15 @@ export class AddServicePriceBreakDownService {
         }
 
         const serviceDetails = await this.dbService.serviceDetails.create({
-            data: dto,
+            data: {
+                ...dto,
+                serviceRequestId: dto.serviceRequestId,
+            },
         });
 
         await this.dbService.serviceRequest.update({
             where: { id: dto.serviceRequestId },
             data: {
-                serviceDetails: {
-                    connect: { id: serviceDetails.id },
-                },
                 basePrice: {
                     increment: dto.servicePrice
                 }
