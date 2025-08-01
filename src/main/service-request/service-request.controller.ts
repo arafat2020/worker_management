@@ -51,7 +51,7 @@ export class ServiceRequestController {
    @UseInterceptors(
     FilesInterceptor(
       'reqPhoto',
-      20, // max number of files
+      30, // max number of files
       new MulterService().createMulterOptions('./temp', 'temp', FileType.IMAGE),
     ),
   )
