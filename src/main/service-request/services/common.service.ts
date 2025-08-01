@@ -28,6 +28,7 @@ export class CommonService {
         Invoice:true,
         Reviews:true,
         signature:true,
+        serviceDetails:true,
         TaskType:{
           select: {
             name: true,
@@ -117,7 +118,14 @@ export class CommonService {
               id: true,
               name: true,
             }
-          }
+          },
+          id:true,
+          problemDescription:true,
+          city:true,
+          locationDescription:true,
+          preferredDate:true,
+          preferredTime:true,
+          status:true
         },
         take: 3,
       });
@@ -132,7 +140,14 @@ export class CommonService {
               id: true,
               name: true,
             }
-          }
+          },
+          id:true,
+          problemDescription:true,
+          city:true,
+          locationDescription:true,
+          preferredDate:true,
+          preferredTime:true,
+          status:true
         },
         take: 3,
       });
@@ -147,7 +162,14 @@ export class CommonService {
               id: true,
               name: true,
             }
-          }
+          },
+          id:true,
+          problemDescription:true,
+          city:true,
+          locationDescription:true,
+          preferredDate:true,
+          preferredTime:true,
+          status:true
         },
         take: 3,
       });

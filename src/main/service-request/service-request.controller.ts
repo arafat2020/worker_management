@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   Req,
@@ -47,7 +48,7 @@ export class ServiceRequestController {
   @Roles('CLIENT','ADMIN', 'WORKER')
   @ApiTags('Client', 'Admin', 'Worker')
   @ApiConsumes('multipart/form-data')
-  @UseInterceptors(
+   @UseInterceptors(
     FilesInterceptor(
       'reqPhoto',
       20, // max number of files

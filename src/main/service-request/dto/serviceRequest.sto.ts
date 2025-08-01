@@ -128,6 +128,7 @@ export class CreateServiceRequestDTO {
   @MaxLength(255, { message: 'Task name must not exceed 255 characters' })
   name: string;
 
+
   // @ApiProperty({
   //   description:
   //     'The price of the task in cents (to avoid floating point issues)',
