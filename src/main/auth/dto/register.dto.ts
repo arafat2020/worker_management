@@ -15,10 +15,6 @@ export class RegisterDto {
     description: 'Phone number of the user',
     example: '+1234567890',
   })
-  @Matches(/^\+\d{10,15}$/, {
-  message: 'Phone number must be in international E.164 format (e.g. +1234567890)',
-})
-@IsNotEmpty()
   @IsNotEmpty()
   phone: string;
 
