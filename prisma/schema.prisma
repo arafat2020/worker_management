@@ -185,7 +185,7 @@ model FileInstance {
   mimeType           String
   size               Int
   ServiceRequest     ServiceRequest? @relation("ReqPhoto", fields: [serviceRequestId], references: [id])
-  serviceRequestId   String?         @unique
+  serviceRequestId   String?         
   ServiceAfter       ServiceRequest? @relation("AfterPhoto", fields: [serviceAfterId], references: [id])
   serviceAfterId     String?
   ClientProfile      ClientProfile?  @relation(fields: [clientProfileId], references: [id])
@@ -226,7 +226,7 @@ model ServiceRequest {
   serviceDetails      serviceDetails []
   locationDescription String         @db.Text
   problemDescription  String         @db.Text
-  reqPhoto            FileInstance?  @relation("ReqPhoto")
+  reqPhoto            FileInstance[]  @relation("ReqPhoto")
   beforePhoto         FileInstance[] @relation("BeforePhoto")
   afterPhoto          FileInstance[] @relation("AfterPhoto")
   preferredTime       DateTime
